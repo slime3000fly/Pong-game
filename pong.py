@@ -21,37 +21,27 @@ f.close()
 # color
 black = (0, 0, 0)
 
-
-
-
-# variable declartaion
-x = [200]
-y = [200]
-checker = [0]
-number_of_apple = 0
-size = 1  # variable which define how long is snake
-t = 0.5
-z1 = 0
-z2 = 0
-move = 20  # variable which define how big is single step for snake
-x_apple = 0
-y_apple = 0
-
 x_pong = 1060
-y_pong = 320
-velocity = 15
+y_pong = 360
+velocity = 5
+ball_velocity = 5
+
+initial_x_ball = 530
+initial_y_ball = 355
 
 x_ball = 530
 y_ball = 355
+ball_direction = 'RIGHT'
+change_to = ball_direction
 
-wall_left = pygame.Rect(0, 0, 10, 740)
-wall_right = pygame.Rect(1070, 0, 10, 740)
-ai_rect = pygame.Rect(5, 320, 15, 80)
-player_rect = pygame.Rect(x_pong, y_pong, 15, 80)
+wall_left = pygame.Rect(0, 0, 5, 740)
+wall_right = pygame.Rect(1075, 0, 10, 740)
+wall_up = pygame.Rect(0, 0, 1080, 10)
+wall_down = pygame.Rect(0, 710, 1080, 10)
+line = pygame.Rect(535, 0, 5, 740)
+
 
 # function declaration
-
-
 def show_score(choice, color, font, size):
     score_font = pygame.font.SysFont(font, size)
     score_surface = score_font.render(
@@ -59,6 +49,7 @@ def show_score(choice, color, font, size):
     score_rect = score_surface.get_rect()
 
     screen.blit(score_surface, score_rect)
+
 
 def lose():
     # function which play after lose game
@@ -91,48 +82,118 @@ done = False
 while not done:
     # print(size)
     for event in pygame.event.get():
+
+        # key to control
+        if event.type == pygame.KEYDOWN:
+            pygame.key.set_repeat(10)
+            if event.key == pygame.K_UP:
+                if y_pong > 0:
+                    y_pong -= velocity
+            if event.key == pygame.K_DOWN:
+                if y_pong < 670:
+                    y_pong += velocity
+            if event.key == pygame.K_ESCAPE:
+                done = True
         if event.type == pygame.QUIT: sys.exit()
-    # adding new element to list x and y
-    for i in range(0, size):
-        if (i >= len(x)):
-            x.append(i)
-            y.append(i)
 
-    # key to control
-    if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_UP:
-            if y_pong > 0: y_pong -= velocity
-        if event.key == pygame.K_DOWN:
-            if y_pong < 640: y_pong += velocity
-        if event.key == pygame.K_LEFT:
-            x_ball -= velocity
-        if event.key == pygame.K_RIGHT:
-            x_ball += velocity
-        if event.key == pygame.K_ESCAPE:
-            done = True
-
+    #drawing elements
     pygame.draw.rect(screen, black, wall_right)
     pygame.draw.rect(screen, black, wall_left)
-    pygame.draw.rect(screen, white, ai_rect)
+    pygame.draw.rect(screen, white, line)
+    pygame.draw.rect(screen, red, wall_up)
+    pygame.draw.rect(screen, red, wall_down)
+    ball = pygame.draw.rect(screen, red, pygame.Rect(x_ball, y_ball, 10, 10))
+    ai_rect = pygame.Rect(0, y_ball, 15, 80)
+    ai_rect.center = (15, y_ball)
+    player_rect = pygame.Rect(x_pong, y_pong, 15, 80)
+    player_rect.center = (x_pong, y_pong)
     pygame.draw.rect(screen, white, player_rect)
-
+    pygame.draw.rect(screen, white, ai_rect)
 
     # drawing score
     show_score(1, white, 'times new roman', 20)
     pygame.display.flip()
     screen.fill(black)
-
-    # draw ball
-    ball = pygame.draw.rect(screen, red, pygame.Rect(x_ball, y_ball, 10, 10))
     # collisions
-    collide = pygame.Rect.colliderect(ball, wall_left)
+    i = random.randint(0, 100)
+    j = random.randint(0, 90)
+
+    if pygame.Rect.colliderect(ball, player_rect):
+
+        if ball_direction == 'RIGHT':
+            if i < 50:
+                ball_direction = 'UP_LEFT'
+            if i > 50:
+                ball_direction = 'DOWN_LEFT'
+        if ball_direction == 'UP_RIGHT':
+            ball_direction = 'UP_LEFT'
+        if ball_direction == 'DOWN_RIGHT':
+            ball_direction = 'DOWN_LEFT'
+
+    if pygame.Rect.colliderect(ball, ai_rect):
+        if ball_direction == 'LEFT':
+            if i < 50:
+                ball_direction = 'UP_RIGHT'
+            if i >= 50:
+                ball_direction = 'DOWN_RIGHT'
+        if ball_direction == 'UP_LEFT':
+            ball_direction = 'UP_RIGHT'
+        if ball_direction == 'DOWN_LEFT':
+            ball_direction = 'DOWN_RIGHT'
+
+    if pygame.Rect.colliderect(ball, wall_up):
+        if ball_direction == 'UP_RIGHT':
+            ball_direction = 'DOWN_RIGHT'
+        if ball_direction == 'UP_LEFT':
+            ball_direction = 'DOWN_LEFT'
+
+    if pygame.Rect.colliderect(ball, wall_down):
+        if ball_direction == 'DOWN_LEFT':
+            ball_direction = 'UP_LEFT'
+        if ball_direction == 'DOWN_RIGHT':
+            ball_direction = 'UP_RIGHT'
 
     if pygame.Rect.colliderect(ball, wall_right):
         ai_score += 1
+        x_ball = initial_x_ball
+        y_ball = initial_y_ball
+        if i >= 50:
+            ball_direction = 'RIGHT'
+        if i < 50:
+            ball_direction = 'LEFT'
     if pygame.Rect.colliderect(ball, wall_left):
         score += 1
+        x_ball = initial_x_ball
+        y_ball = initial_y_ball
+        if i >= 50:
+            ball_direction = 'RIGHT'
+        if i < 50:
+            ball_direction = 'LEFT'
         if score > highest_score:
             highest_score = score
+
+    # Moving the ball
+    if ball_direction == 'UP':
+        y_ball -= ball_velocity
+    if ball_direction == 'DOWN':
+        y_ball += ball_velocity
+    if ball_direction == 'LEFT':
+        x_ball -= ball_velocity
+    if ball_direction == 'RIGHT':
+        x_ball += ball_velocity
+
+    if ball_direction == 'UP_RIGHT':
+        x_ball += ball_velocity
+        y_ball -= ball_velocity
+    if ball_direction == 'UP_LEFT':
+        x_ball -= ball_velocity
+        y_ball -= ball_velocity
+    if ball_direction == 'DOWN_RIGHT':
+        x_ball += ball_velocity
+        y_ball += ball_velocity
+    if ball_direction == 'DOWN_LEFT':
+        x_ball -= ball_velocity
+        y_ball += ball_velocity
 
     # saving highest score to highest_score.txt
     f = open('highest_score.txt', 'w')
