@@ -22,13 +22,6 @@ f.close()
 black = (0, 0, 0)
 
 
-def show_score(choice, color, font, size):
-    score_font = pygame.font.SysFont(font, size)
-    score_surface = score_font.render(
-        'AI: ' + str(ai_score) + '  Player: ' + str(score) + '  Highest Score : ' + str(highest_score), True, color)
-    score_rect = score_surface.get_rect()
-
-    screen.blit(score_surface, score_rect)
 
 
 # variable declartaion
@@ -53,8 +46,20 @@ y_ball = 355
 
 wall_left = pygame.Rect(0, 0, 10, 740)
 wall_right = pygame.Rect(1070, 0, 10, 740)
+ai_rect = pygame.Rect(5, 320, 15, 80)
+player_rect = pygame.Rect(x_pong, y_pong, 15, 80)
 
 # function declaration
+
+
+def show_score(choice, color, font, size):
+    score_font = pygame.font.SysFont(font, size)
+    score_surface = score_font.render(
+        'AI: ' + str(ai_score) + '  Player: ' + str(score) + '  Highest Score : ' + str(highest_score), True, color)
+    score_rect = score_surface.get_rect()
+
+    screen.blit(score_surface, score_rect)
+
 def lose():
     # function which play after lose game
     while 1:
@@ -108,8 +113,8 @@ while not done:
 
     pygame.draw.rect(screen, black, wall_right)
     pygame.draw.rect(screen, black, wall_left)
-    pygame.draw.rect(screen, white, pygame.Rect(5, 320, 15, 80))
-    pygame.draw.rect(screen, white, pygame.Rect(x_pong, y_pong, 15, 80))
+    pygame.draw.rect(screen, white, ai_rect)
+    pygame.draw.rect(screen, white, player_rect)
 
 
     # drawing score
