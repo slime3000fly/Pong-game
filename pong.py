@@ -2,6 +2,7 @@
 # By: slime3000fly and angater1
 
 import pygame, sys, time, random
+from pygame import mixer
 
 pygame.init()
 pygame.display.init()
@@ -21,8 +22,17 @@ f.close()
 # color
 black = (0, 0, 0)
 
+initial_x_pong = 1060
+initial_y_pong = 360
+initial_x_pong_2 = 5
+initial_y_pong_2 = 360
+
 x_pong = 1060
 y_pong = 360
+
+x_pong_2 = 5
+y_pong_2 = 360
+
 velocity = 5
 ball_velocity = 5
 
@@ -40,6 +50,12 @@ wall_up = pygame.Rect(0, 0, 1080, 10)
 wall_down = pygame.Rect(0, 710, 1080, 10)
 line = pygame.Rect(535, 0, 5, 740)
 
+#sound
+mixer.music.load('Simplicity(by damn so deep).mp3')
+mixer.music.play(-1)
+bang_sound = mixer.Sound('bang.wav')
+score_sound = mixer.Sound('score.wav')
+ai_score_sound = mixer.Sound('ai_score.wav')
 
 # function declaration
 def show_score(choice, color, font, size):
@@ -80,21 +96,27 @@ yellow = (255, 50, 170)
 done = False
 
 while not done:
-    # print(size)
     for event in pygame.event.get():
 
         # key to control
         if event.type == pygame.KEYDOWN:
             pygame.key.set_repeat(10)
             if event.key == pygame.K_UP:
-                if y_pong > 0:
+                if y_pong > 50:
                     y_pong -= velocity
             if event.key == pygame.K_DOWN:
                 if y_pong < 670:
                     y_pong += velocity
+            if event.key == pygame.K_w:
+                if y_pong_2 > 50:
+                    y_pong_2 -= velocity
+            if event.key == pygame.K_s:
+                if y_pong_2 < 670:
+                    y_pong_2 += velocity
             if event.key == pygame.K_ESCAPE:
                 done = True
         if event.type == pygame.QUIT: sys.exit()
+
 
     #drawing elements
     pygame.draw.rect(screen, black, wall_right)
@@ -103,8 +125,10 @@ while not done:
     pygame.draw.rect(screen, red, wall_up)
     pygame.draw.rect(screen, red, wall_down)
     ball = pygame.draw.rect(screen, red, pygame.Rect(x_ball, y_ball, 10, 10))
-    ai_rect = pygame.Rect(0, y_ball, 15, 80)
-    ai_rect.center = (15, y_ball)
+    ai_rect = pygame.Rect(x_pong_2, y_pong_2, 15, 80)
+    #ai_rect = pygame.Rect(x_pong_2, y_ball, 15, 80)
+    #ai_rect.center = (15, y_ball)
+    ai_rect.center = (15, y_pong_2)
     player_rect = pygame.Rect(x_pong, y_pong, 15, 80)
     player_rect.center = (x_pong, y_pong)
     pygame.draw.rect(screen, white, player_rect)
@@ -119,7 +143,7 @@ while not done:
     j = random.randint(0, 120)
 
     if pygame.Rect.colliderect(ball, player_rect):
-
+        bang_sound.play()
         if ball_direction == 'RIGHT':
             if i < 50:
                 ball_direction = 'UP_LEFT'
@@ -131,6 +155,7 @@ while not done:
             ball_direction = 'DOWN_LEFT'
 
     if pygame.Rect.colliderect(ball, ai_rect):
+        bang_sound.play()
         if ball_direction == 'LEFT':
             if i < 50:
                 ball_direction = 'UP_RIGHT'
@@ -142,21 +167,28 @@ while not done:
             ball_direction = 'DOWN_RIGHT'
 
     if pygame.Rect.colliderect(ball, wall_up):
+        bang_sound.play()
         if ball_direction == 'UP_RIGHT':
             ball_direction = 'DOWN_RIGHT'
         if ball_direction == 'UP_LEFT':
             ball_direction = 'DOWN_LEFT'
 
     if pygame.Rect.colliderect(ball, wall_down):
+        bang_sound.play()
         if ball_direction == 'DOWN_LEFT':
             ball_direction = 'UP_LEFT'
         if ball_direction == 'DOWN_RIGHT':
             ball_direction = 'UP_RIGHT'
 
     if pygame.Rect.colliderect(ball, wall_right):
+        ai_score_sound.play()
         ai_score += 1
         x_ball = initial_x_ball
         y_ball = initial_y_ball
+        x_pong = initial_x_pong
+        y_pong = initial_y_pong
+        x_pong_2 = initial_x_pong_2
+        y_pong_2 = initial_y_pong_2
         if i <= 20:
             ball_direction = 'RIGHT'
         if 20 < i <= 40:
@@ -170,9 +202,14 @@ while not done:
         if 100 < i <= 120:
             ball_direction = 'DOWN_LEFT'
     if pygame.Rect.colliderect(ball, wall_left):
+        score_sound.play()
         score += 1
         x_ball = initial_x_ball
         y_ball = initial_y_ball
+        x_pong = initial_x_pong
+        y_pong = initial_y_pong
+        x_pong_2 = initial_x_pong_2
+        y_pong_2 = initial_y_pong_2
         if i <= 20:
             ball_direction = 'RIGHT'
         if 20 < i <= 40:
