@@ -116,7 +116,7 @@ while not done:
     screen.fill(black)
     # collisions
     i = random.randint(0, 100)
-    j = random.randint(0, 90)
+    j = random.randint(0, 120)
 
     if pygame.Rect.colliderect(ball, player_rect):
 
@@ -157,21 +157,34 @@ while not done:
         ai_score += 1
         x_ball = initial_x_ball
         y_ball = initial_y_ball
-        if i >= 50:
+        if i <= 20:
             ball_direction = 'RIGHT'
-        if i < 50:
+        if 20 < i <= 40:
             ball_direction = 'LEFT'
+        if 40 < i <= 60:
+            ball_direction = 'UP_RIGHT'
+        if 60 < i <= 80:
+            ball_direction = 'UP_LEFT'
+        if 80 < i <= 100:
+            ball_direction = 'DOWN_RIGHT'
+        if 100 < i <= 120:
+            ball_direction = 'DOWN_LEFT'
     if pygame.Rect.colliderect(ball, wall_left):
         score += 1
         x_ball = initial_x_ball
         y_ball = initial_y_ball
-        if i >= 50:
+        if i <= 20:
             ball_direction = 'RIGHT'
-        if i < 50:
+        if 20 < i <= 40:
             ball_direction = 'LEFT'
-        if score > highest_score:
-            highest_score = score
-
+        if 40 < i <= 60:
+            ball_direction = 'UP_RIGHT'
+        if 60 < i <= 80:
+            ball_direction = 'UP_LEFT'
+        if 80 < i <= 100:
+            ball_direction = 'DOWN_RIGHT'
+        if 100 < i <= 120:
+            ball_direction = 'DOWN_LEFT'
     # Moving the ball
     if ball_direction == 'UP':
         y_ball -= ball_velocity
@@ -194,6 +207,9 @@ while not done:
     if ball_direction == 'DOWN_LEFT':
         x_ball -= ball_velocity
         y_ball += ball_velocity
+
+    if ai_score > score + 10:
+        lose()
 
     # saving highest score to highest_score.txt
     f = open('highest_score.txt', 'w')
