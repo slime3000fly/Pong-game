@@ -1,5 +1,5 @@
-# snake game with pygame
-# By: slime3000fly and a little bit by angater1
+# pong game with pygame
+# By: slime3000fly and angater1
 
 import pygame, sys, time, random
 
