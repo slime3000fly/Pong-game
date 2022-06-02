@@ -1,5 +1,5 @@
 # pong game with pygame
-# By: slime3000fly and angater1
+# By:angater1
 
 import pygame, sys, time, random
 from pygame import mixer
@@ -50,12 +50,13 @@ wall_up = pygame.Rect(0, 0, 1080, 10)
 wall_down = pygame.Rect(0, 710, 1080, 10)
 line = pygame.Rect(535, 0, 5, 740)
 
-#sound
+# sound
 mixer.music.load('Simplicity(by damn so deep).mp3')
 mixer.music.play(-1)
 bang_sound = mixer.Sound('bang.wav')
 score_sound = mixer.Sound('score.wav')
 ai_score_sound = mixer.Sound('ai_score.wav')
+
 
 # function declaration
 def show_score(choice, color, font, size):
@@ -117,8 +118,7 @@ while not done:
                 done = True
         if event.type == pygame.QUIT: sys.exit()
 
-
-    #drawing elements
+    # drawing elements
     pygame.draw.rect(screen, black, wall_right)
     pygame.draw.rect(screen, black, wall_left)
     pygame.draw.rect(screen, white, line)
@@ -126,8 +126,8 @@ while not done:
     pygame.draw.rect(screen, red, wall_down)
     ball = pygame.draw.rect(screen, red, pygame.Rect(x_ball, y_ball, 10, 10))
 
-    #ai_rect = pygame.Rect(x_pong_2, y_pong_2, 15, 80)
-    #ai_rect.center = (15, y_pong_2)
+    # ai_rect = pygame.Rect(x_pong_2, y_pong_2, 15, 80)
+    # ai_rect.center = (15, y_pong_2)
 
     ai_rect = pygame.Rect(x_pong_2, y_ball, 15, 80)
     ai_rect.center = (15, y_ball)
