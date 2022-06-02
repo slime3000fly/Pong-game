@@ -125,10 +125,13 @@ while not done:
     pygame.draw.rect(screen, red, wall_up)
     pygame.draw.rect(screen, red, wall_down)
     ball = pygame.draw.rect(screen, red, pygame.Rect(x_ball, y_ball, 10, 10))
-    ai_rect = pygame.Rect(x_pong_2, y_pong_2, 15, 80)
-    #ai_rect = pygame.Rect(x_pong_2, y_ball, 15, 80)
-    #ai_rect.center = (15, y_ball)
-    ai_rect.center = (15, y_pong_2)
+
+    #ai_rect = pygame.Rect(x_pong_2, y_pong_2, 15, 80)
+    #ai_rect.center = (15, y_pong_2)
+
+    ai_rect = pygame.Rect(x_pong_2, y_ball, 15, 80)
+    ai_rect.center = (15, y_ball)
+
     player_rect = pygame.Rect(x_pong, y_pong, 15, 80)
     player_rect.center = (x_pong, y_pong)
     pygame.draw.rect(screen, white, player_rect)
